@@ -1,0 +1,18 @@
+I would like you to create a software which handles the Complete process of Special kids therapy centers
+ 
+1) Including admin which sets up all the possible therapies and facilities available . Creating login for receptionist ,
+2) Receptionist to book appointments offline
+3) Sign in page for Patient, Login page , online page to book appointments online - select Dr , therapy and select from slot available.
+4) Patient/ Guardian login to check the all the Dr findings & status of Patient
+5) Portal to make payments (payment gateway)  
+React , .NET & SQL are skills for creating this product.
+
+https://therapez.org/welcome-to-therapez-1
+
+Frontend: React.js (TypeScript) + Material-UI
+Backend: .NET 6 Web API
+Database: SQL Server 
+Auth: JWT + .NET Identity
+Payments: Razorpay/Stripe API
+DevOps: Docker + GitHub Actions
+
