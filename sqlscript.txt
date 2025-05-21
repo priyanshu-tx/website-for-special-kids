@@ -1,0 +1,144 @@
+CREATE TABLE Admin (
+    AdminID SERIAL PRIMARY KEY,  --auto inc
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Password VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Receptionist (
+    ReceptionistID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Password VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Patient (
+    PatientID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    DOB DATE,
+    Gender VARCHAR(10),
+    PatientName VARCHAR(100),
+    PatientPhone VARCHAR(15),
+    Email VARCHAR(100) UNIQUE,
+    Phone VARCHAR(15)
+);
+
+CREATE TABLE UserAccount (
+    UserID SERIAL PRIMARY KEY,
+    Username VARCHAR(50) UNIQUE NOT NULL,
+    Password VARCHAR(100) NOT NULL,
+    Role VARCHAR(20) CHECK (Role IN ('Admin', 'Receptionist', 'Patient')),
+    PatientID INT, -- Nullable for Admin/Receptionist
+    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID)
+);
+
+CREATE TABLE Doctor (
+    DoctorID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Specialization VARCHAR(100),
+    Email VARCHAR(100) UNIQUE,
+    Phone VARCHAR(15)
+);
+
+CREATE TABLE Therapy (
+    TherapyID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Description TEXT,
+    Duration INTERVAL,
+    Cost DECIMAL(10, 2)
+);
+
+CREATE TABLE Facility (
+    FacilityID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Description TEXT
+);
+
+CREATE TABLE Appointment (
+    AppointmentID SERIAL PRIMARY KEY,
+    PatientID INT NOT NULL,
+    DoctorID INT NOT NULL,
+    TherapyID INT NOT NULL,
+    Date DATE NOT NULL,
+    TimeSlot VARCHAR(20) NOT NULL,
+    BookingType VARCHAR(10) CHECK (BookingType IN ('Online', 'Offline')),
+    Status VARCHAR(20),
+    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
+    FOREIGN KEY (DoctorID) REFERENCES Doctor(DoctorID),
+    FOREIGN KEY (TherapyID) REFERENCES Therapy(TherapyID)
+);
+
+CREATE TABLE PatientReport (
+    ReportID SERIAL PRIMARY KEY,
+    PatientID INT NOT NULL,
+    DoctorID INT NOT NULL,
+    TherapyID INT NOT NULL,
+    Findings TEXT,
+    Recommendations TEXT,
+    ReportDate DATE NOT NULL,
+    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
+    FOREIGN KEY (DoctorID) REFERENCES Doctor(DoctorID),
+    FOREIGN KEY (TherapyID) REFERENCES Therapy(TherapyID)
+);
+
+CREATE TABLE Payment (
+    PaymentID SERIAL PRIMARY KEY,
+    PatientID INT NOT NULL,
+    AppointmentID INT NOT NULL,
+    Amount DECIMAL(10, 2),
+    PaymentMethod VARCHAR(50),
+    Status VARCHAR(20),
+    TransactionID VARCHAR(100),
+    PaymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
+    FOREIGN KEY (AppointmentID) REFERENCES Appointment(AppointmentID)
+);
+
+
+--Sample data:
+INSERT INTO Admin (Name, Email, Password)
+VALUES 
+('Alice Admin', 'alice.admin@example.com', 'securepass123');
+
+INSERT INTO Receptionist (Name, Email, Password)
+VALUES 
+('Bob Receptionist', 'bob.reception@example.com', 'receptpass456');
+
+INSERT INTO Doctor (Name, Specialization, Email, Phone)
+VALUES 
+('Dr. Smith', 'Physiotherapy', 'smith.doc@example.com', '1234567890'),
+('Dr. Adams', 'Speech Therapy', 'adams.doc@example.com', '9876543210');
+
+
+INSERT INTO Therapy (Name, Description, Duration, Cost)
+VALUES 
+('Physiotherapy', 'Physical rehab exercises', INTERVAL '30 minutes', 100.00),
+('Speech Therapy', 'Language and speech support', INTERVAL '45 minutes', 120.00);
+
+INSERT INTO Facility (Name, Description)
+VALUES 
+('Main Clinic', 'Downtown branch with full therapy equipment'),
+('Rehab Center', 'Advanced physical therapy tools');
+
+INSERT INTO Patient (Name, DOB, Gender, GuardianName, GuardianPhone, Email, Phone)
+VALUES 
+('John Doe', '2010-05-10', 'Male', 'Jane Doe', '5551234567', 'john.doe@example.com', '5557654321');
+
+INSERT INTO UserAccount (Username, Password, Role, PatientID)
+VALUES 
+('john_doe', 'johnpass123', 'Patient', 1);
+
+INSERT INTO Appointment (PatientID, DoctorID, TherapyID, Date, TimeSlot, BookingType, Status)
+VALUES 
+(1, 1, 1, '2025-05-22', '10:00 AM', 'Online', 'Confirmed');
+
+INSERT INTO PatientReport (PatientID, DoctorID, TherapyID, Findings, Recommendations, ReportDate)
+VALUES 
+(1, 1, 1, 'Mild muscle strain', 'Continue exercises for 2 weeks', '2025-05-22');
+
+INSERT INTO Payment (PatientID, AppointmentID, Amount, PaymentMethod, Status, TransactionID)
+VALUES 
+(1, 1, 100.00, 'Credit Card', 'Completed', 'TXN123456');
+
+
+
